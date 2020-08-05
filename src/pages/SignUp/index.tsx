@@ -34,40 +34,41 @@ const SignUp: React.FC = () => {
   const inputPasswordRef = useRef<TextInput>(null);
   const navigation = useNavigation();
 
-  const handleSubmit = useCallback(async (data: SignInFormData): Promise<
-    void
-  > => {
-    try {
-      formRef.current?.setErrors({});
+  const handleSubmit = useCallback(
+    async (data: SignInFormData): Promise<void> => {
+      try {
+        formRef.current?.setErrors({});
 
-      const schema = Yup.object().shape({
-        name: Yup.string().required('Nome obrigatório'),
-        email: Yup.string()
-          .required('E-mail obrigatório')
-          .email('Digite um e-mail válido'),
-        password: Yup.string().required('Senha obrigatória'),
-      });
-      await schema.validate(data, {
-        abortEarly: false,
-      });
+        const schema = Yup.object().shape({
+          name: Yup.string().required('Nome obrigatório'),
+          email: Yup.string()
+            .required('E-mail obrigatório')
+            .email('Digite um e-mail válido'),
+          password: Yup.string().required('Senha obrigatória'),
+        });
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-      api.post('users', data).then((response) => {
-        Alert.alert('Sucesso!', 'Você já pode fazer cadastro na aplicação.');
-        console.log(response);
-        navigation.goBack();
-      });
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(err);
-        formRef.current?.setErrors(errors);
+        api.post('users', data).then((response) => {
+          Alert.alert('Sucesso!', 'Você já pode fazer cadastro na aplicação.');
+          console.log(response);
+          navigation.goBack();
+        });
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+          formRef.current?.setErrors(errors);
+        }
+
+        Alert.alert(
+          'Erro no cadastro',
+          'Ocorreu um erro ao fazer o cadstro. Cheque as informações.',
+        );
       }
-
-      Alert.alert(
-        'Erro no cadastro',
-        'Ocorreu um erro ao fazer o cadstro. Cheque as informações.',
-      );
-    }
-  }, []);
+    },
+    [navigation],
+  );
 
   return (
     <>
