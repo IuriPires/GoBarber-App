@@ -14,6 +14,7 @@ import {Form} from '@unform/mobile';
 import {FormHandles} from '@unform/core';
 import * as Yup from 'yup';
 import getValidationErrors from '../../utils/getValidationErrors';
+import api from '../../services/api';
 
 import Button from '../../components/Button';
 import Input from '../../components/Input';
@@ -50,7 +51,11 @@ const SignUp: React.FC = () => {
         abortEarly: false,
       });
 
-      // signIn({email: data.email, password: data.password});
+      api.post('users', data).then((response) => {
+        Alert.alert('Sucesso!', 'Você já pode fazer cadastro na aplicação.');
+        console.log(response);
+        navigation.goBack();
+      });
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const errors = getValidationErrors(err);
